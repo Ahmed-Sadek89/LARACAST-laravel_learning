@@ -8,8 +8,10 @@ Route::get('/', function () {
 });
 
 Route::get("/jobs", function () {
+    // $jobs = Job::all(); //not good for lazy loading
+    $jobs = Job::with("employer")->cursorPaginate(3);
 
-    return view("jobs", ["jobs" => Job::all()]);
+    return view("jobs", ["jobs" => $jobs]);
 });
 
 Route::get("/jobs/{id}", function ($id) {
