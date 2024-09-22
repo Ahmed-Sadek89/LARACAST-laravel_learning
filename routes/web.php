@@ -8,15 +8,28 @@ Route::get('/', function () {
 });
 
 Route::get("/jobs", function () {
-    // $jobs = Job::all(); //not good for lazy loading
-    $jobs = Job::with("employer")->cursorPaginate(3);
+    $jobs = Job::with("employer")->latest()->cursorPaginate(3);
 
-    return view("jobs", ["jobs" => $jobs]);
+    return view("jobs.index", ["jobs" => $jobs]);
+});
+
+Route::get("/jobs/create", function () {
+    return view("jobs.create");
 });
 
 Route::get("/jobs/{id}", function ($id) {
 
-    return view("job", ["job" => Job::find($id)]);
+    return view("jobs.show", ["job" => Job::find($id)]);
+});
+
+Route::post("/jobs", function () {
+    Job::create([
+        "title" => request("title"),
+        "salary" => request("salary"),
+        "employer_id" => 1
+    ]);
+
+    return redirect("jobs");
 });
 
 Route::get("/contact", function () {
